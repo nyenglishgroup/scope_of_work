@@ -1424,7 +1424,7 @@ select.stat-sel option[value=""]{color:#aaa;}
 <div id="tab-materials" class="tabpanel">
   <div class="gs-phase-breakdown">
     <h3>📦 Material Quantity Summary — Project-Wide</h3>
-    <p style="font-size:11px;color:var(--gray-dark);margin-bottom:10px;">Auto-aggregated from all phases. Only rows with a material selected and a quantity entered are included.</p>
+    <p style="font-size:11px;color:var(--gray-dark);margin-bottom:10px;">Auto-aggregated from all phases. Only rows with a material selected, a Qty entered, <strong>and</strong> a Mat. ($) cost entered are included.</p>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;" id="mat-qty-grid">
       <div style="grid-column:span 2;color:#aaa;font-size:11px;font-style:italic;">No materials entered yet. Fill in material and quantity fields across any phase to see totals here.</div>
     </div>
@@ -2521,6 +2521,7 @@ function restoreFormData(data){
   }
  
   calcAll();
+  calcMatQty(); // Ensure Materials tab is populated immediately on load
   return true;
 }
  
