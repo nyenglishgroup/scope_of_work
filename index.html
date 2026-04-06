@@ -2137,7 +2137,7 @@ function calcMatQty(){
   var grid = document.getElementById('mat-qty-grid');
   if(!grid) return;
  
-  // Collect ALL rows with a material selected
+  // Collect only rows where BOTH qty and material cost are entered
   var allRows = [];
   PHASES.forEach(function(ph){
     var tbl = document.getElementById('tbl-'+ph.id);
@@ -2153,8 +2153,10 @@ function calcMatQty(){
       if(!matSel) return;
       var mat = (matSel.value||'').trim();
       if(!mat || mat==='-- Select --' || mat==='-- Select Material --') return;
-      var qty = qtyEl ? pn(qtyEl.value) : 0;
+      var qty  = qtyEl  ? pn(qtyEl.value)  : 0;
       var cost = costEl ? pn(costEl.value) : 0;
+      // Only include rows where BOTH qty > 0 AND mat cost > 0
+      if(qty <= 0 || cost <= 0) return;
       allRows.push({
         mat     : mat,
         item    : itemEl  ? (itemEl.value||'').trim() : '',
@@ -2162,7 +2164,7 @@ function calcMatQty(){
         qty     : qty,
         unit    : unitEl  ? unitEl.value : 'Lump Sum (LS)',
         matCost : cost,
-        unitCost: (qty > 0 && cost > 0) ? cost / qty : 0,
+        unitCost: cost / qty,
         purch   : purchEl ? (purchEl.value||'—') : '—'
       });
     });
@@ -2171,7 +2173,7 @@ function calcMatQty(){
   grid.innerHTML = '';
  
   if(allRows.length === 0){
-    grid.innerHTML = '<div style="grid-column:span 2;color:#aaa;font-size:11px;font-style:italic;">No materials selected yet. Select materials in any phase tab to populate this list.</div>';
+    grid.innerHTML = '<div style="grid-column:span 2;color:#aaa;font-size:11px;font-style:italic;">No materials with both Qty and Cost entered yet. Fill in both the Qty and Mat. ($) columns in any phase tab to populate this list.</div>';
     return;
   }
  
