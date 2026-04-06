@@ -20,22 +20,79 @@
 }
 html{font-size:12px;}
 body{font-family:'Barlow',sans-serif;background:#e8eaef;color:var(--black);padding:0;}
-
+ 
 /* ===== PRINT / LANDSCAPE ===== */
 @media print{
-  @page{size:landscape;margin:10mm 8mm;}
-  body{background:#fff;padding:0;}
+  @page{size:landscape;margin:12mm 10mm;}
+  @page :first { margin-top: 8mm; }
+  body{background:#fff;padding:0;font-size:10px;}
   .no-print{display:none!important;}
-  .page-break{page-break-before:always;}
   .tab-content{display:block!important;}
   .tab-btn{display:none;}
   .tabpanel{display:block!important;margin-bottom:20px;}
-  .section-card{box-shadow:none;border:1px solid #ccc;}
+  .section-card{box-shadow:none;border:1px solid #ccc;page-break-inside:avoid;}
+  .wrapper{box-shadow:none;}
+ 
+  /* Page numbers */
+  .tabpanel::after{
+    content: '';
+    display: block;
+    page-break-after: always;
+  }
+  .tabpanel:last-child::after{ page-break-after: avoid; }
+ 
+  /* Print header on every page */
+  .print-header{
+    display:flex!important;
+    justify-content:space-between;
+    align-items:center;
+    border-bottom:2px solid var(--navy);
+    padding-bottom:4px;
+    margin-bottom:10px;
+    font-family:'Barlow Condensed',sans-serif;
+    font-weight:700;
+    font-size:13px;
+    color:var(--navy);
+  }
+  .print-header .ph-addr{ font-size:11px; color:#555; font-weight:400; }
+ 
+  /* Page number counter */
+  body{ counter-reset: page-counter; }
+  .tabpanel{ counter-increment: page-counter; position: relative; }
+  .tabpanel::before{
+    content: 'Page ' counter(page-counter);
+    position: running(pagenum);
+    font-size: 9px;
+    color: #888;
+  }
+ 
+  /* Ensure summary tab values are visible */
+  #tab-summary{ display:block!important; }
+  .gs-table td{ font-size:11px; }
+  .gs-ph-table td, .gs-ph-table th{ font-size:10px; }
+ 
+  /* Fix sticky columns for print */
+  .sow-table tbody td:nth-child(1),
+  .sow-table tbody td:nth-child(2),
+  .sow-table thead th:nth-child(1),
+  .sow-table thead th:nth-child(2){
+    position:relative!important;
+    left:auto!important;
+  }
+  /* Table font for print */
+  .sow-table{ font-size:9px; }
+  .sow-table th{ font-size:8px; padding:3px 4px; }
+  .sow-table td{ padding:2px 3px; }
+  .perm-table{ font-size:9px; }
+  .perm-table th{ font-size:8px; }
+ 
+  /* Section headers */
+  .section-card .sh{ padding:5px 8px; font-size:11px; }
 }
 @media screen{
   body{padding:16px;}
 }
-
+ 
 /* ===== TOOLBAR ===== */
 .toolbar{background:var(--navy);color:#fff;display:flex;align-items:center;gap:10px;padding:10px 18px;border-radius:8px 8px 0 0;flex-wrap:wrap;}
 .toolbar-logo{display:flex;align-items:center;gap:8px;}
@@ -49,10 +106,10 @@ body{font-family:'Barlow',sans-serif;background:#e8eaef;color:var(--black);paddi
 .tbtn-gray{background:#3a4d6e;color:#fff;}.tbtn-gray:hover{background:#2e3d58;}
 .tbtn-green{background:var(--green);color:#fff;}.tbtn-green:hover{background:#1f5c38;}
 .tbtn-amber{background:#b87800;color:#fff;}.tbtn-amber:hover{background:#8a5a00;}
-
+ 
 /* ===== MAIN WRAPPER ===== */
 .wrapper{background:#fff;border-radius:0 0 8px 8px;box-shadow:var(--shadow);padding:0;}
-
+ 
 /* ===== PROJECT INFO ===== */
 .project-info{background:var(--gray-light);border-bottom:2px solid var(--gray-mid);padding:14px 18px;}
 .pi-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:8px 16px;}
@@ -69,7 +126,7 @@ body{font-family:'Barlow',sans-serif;background:#e8eaef;color:var(--black);paddi
 .pm-comment-box{background:#fffbf0;border:1.5px solid #f0d080;border-radius:5px;padding:10px 14px;margin-top:10px;}
 .pm-comment-box label{font-size:10px;font-weight:700;color:#7a5800;text-transform:uppercase;letter-spacing:0.4px;display:flex;align-items:center;gap:5px;}
 .pm-comment-box textarea{border:1px solid #f0d080;background:#fffef5;font-size:11px;min-height:56px;}
-
+ 
 /* ===== TABS ===== */
 .tabs-nav{display:flex;gap:0;border-bottom:2px solid var(--navy);overflow-x:auto;background:var(--gray-light);padding:0 18px;flex-wrap:nowrap;}
 .tab-btn{
@@ -83,7 +140,7 @@ body{font-family:'Barlow',sans-serif;background:#e8eaef;color:var(--black);paddi
 .tab-content{padding:16px 18px;}
 .tabpanel{display:none;}
 .tabpanel.active{display:block;}
-
+ 
 /* ===== SECTION CARDS ===== */
 .section-card{background:#fff;border:1px solid var(--border);border-radius:6px;margin-bottom:14px;overflow:hidden;}
 .section-card .sh{
@@ -98,7 +155,7 @@ body{font-family:'Barlow',sans-serif;background:#e8eaef;color:var(--black);paddi
 .weeks-field input{width:40px;border:1px solid rgba(255,255,255,0.4);background:rgba(255,255,255,0.12);
   color:#fff;border-radius:3px;padding:2px 5px;font-size:10px;text-align:center;font-family:'Barlow',sans-serif;}
 .weeks-field input::placeholder{color:rgba(255,255,255,0.5);}
-
+ 
 /* ===== TABLES ===== */
 .sow-table{width:100%;border-collapse:collapse;font-size:11px;}
 .sow-table thead tr{background:#eef0f6;}
@@ -112,7 +169,7 @@ body{font-family:'Barlow',sans-serif;background:#e8eaef;color:var(--black);paddi
 }
 .sow-table input:focus,.sow-table select:focus{background:#fffde7;border-radius:2px;}
 .sow-table td.num{text-align:right;font-weight:600;color:var(--navy);}
-
+ 
 /* ===== FIRST TWO COLUMNS — STICKY + HOVER EXPAND ===== */
 .sow-table tbody td:nth-child(1),
 .sow-table tbody td:nth-child(2){
@@ -128,7 +185,7 @@ body{font-family:'Barlow',sans-serif;background:#e8eaef;color:var(--black);paddi
 .sow-table tbody td:nth-child(2){ left:94px; min-width:110px; border-right:2px solid #c8d4e8; }
 .sow-table thead th:nth-child(1){ position:sticky; left:0; z-index:3; background:#eef0f6; border-right:2px solid #c8d4e8; }
 .sow-table thead th:nth-child(2){ position:sticky; left:94px; z-index:3; background:#eef0f6; border-right:2px solid #c8d4e8; }
-
+ 
 /* Hover expand — show full text in a floating chip */
 .sow-table tbody td:nth-child(1):hover,
 .sow-table tbody td:nth-child(2):hover{
@@ -160,14 +217,14 @@ body{font-family:'Barlow',sans-serif;background:#e8eaef;color:var(--black);paddi
 }
 td.line-total{font-weight:700;text-align:right;color:var(--navy);padding-right:8px;font-size:11px;}
 td.line-total.pos{color:var(--green);}
-
+ 
 /* column widths */
 .c-room{width:9%}.c-item{width:11%}.c-desc{width:10%}
 .c-mat{width:11%}.c-link{width:5%}.c-purch{width:7%}
 .c-qty{width:4%}.c-unit{width:5%}
 .c-mat${width:7%}.c-labor{width:7%}.c-sub{width:7%}
 .c-tot{width:7%}.c-stat{width:6%}
-
+ 
 /* material link btn */
 .mat-link-btn{
   display:inline-flex;align-items:center;justify-content:center;
@@ -179,13 +236,13 @@ td.line-total.pos{color:var(--green);}
 .add-link-input{display:none;position:absolute;z-index:100;background:#fff;border:1px solid var(--navy);border-radius:4px;padding:6px 8px;box-shadow:0 4px 16px rgba(0,0,0,.15);min-width:260px;}
 .add-link-input input{width:200px;border:1px solid var(--border);padding:3px 6px;border-radius:3px;font-size:11px;}
 .add-link-input button{margin-left:6px;background:var(--navy);color:#fff;border:none;border-radius:3px;padding:3px 8px;font-size:11px;cursor:pointer;}
-
+ 
 /* add row btn */
 .add-row-btn{font-size:10px;color:var(--navy);background:var(--gray-light);border:1px dashed var(--border);
   padding:4px 10px;border-radius:3px;cursor:pointer;width:100%;text-align:left;margin-top:2px;
   font-family:'Barlow',sans-serif;}
 .add-row-btn:hover{background:#dde2ef;}
-
+ 
 /* ===== PHASE SUMMARY ===== */
 .phase-summary{display:flex;justify-content:flex-end;margin-top:8px;}
 .phase-summary table{border-collapse:collapse;min-width:280px;}
@@ -193,7 +250,7 @@ td.line-total.pos{color:var(--green);}
 .phase-summary .ps-lbl{font-weight:600;background:var(--gray-light);color:var(--navy);}
 .phase-summary .ps-val{text-align:right;font-weight:700;}
 .phase-summary .ps-grand{background:var(--navy);color:#fff;font-weight:700;font-size:12px;}
-
+ 
 /* ===== GLOBAL SUMMARY ===== */
 .global-summary{max-width:600px;margin:0 auto;}
 .gs-table{width:100%;border-collapse:collapse;}
@@ -210,7 +267,7 @@ td.line-total.pos{color:var(--green);}
 .gs-ph-table td{padding:5px 8px;border:1px solid var(--border);}
 .gs-ph-table tbody tr:nth-child(even){background:var(--gray-light);}
 .gs-ph-table .tot-row td{font-weight:700;background:#dce6f3;color:var(--navy);}
-
+ 
 /* ===== MATERIAL QTY TRACKER ===== */
 .mat-qty-card{background:var(--gray-light);border:1px solid var(--border);border-radius:5px;overflow:hidden;}
 .mat-qty-card .mqc-header{background:var(--navy);color:#fff;font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:12px;padding:5px 10px;letter-spacing:0.5px;}
@@ -220,25 +277,25 @@ td.line-total.pos{color:var(--green);}
 .mat-qty-card tbody tr:nth-child(even){background:#f9fafc;}
 .mat-qty-card .qty-val{font-weight:700;text-align:right;color:var(--navy);}
 .mat-qty-card .cost-val{text-align:right;color:var(--green);font-weight:600;}
-
+ 
 /* ===== SIG GRID ===== */
 .sig-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-top:16px;}
 .sig-block{border-top:2px solid var(--navy);padding-top:6px;}
 .sig-block label{font-size:9.5px;color:var(--gray-dark);text-transform:uppercase;letter-spacing:0.4px;}
 .sig-block input{width:100%;border:none;border-bottom:1.5px solid var(--border);margin-top:18px;font-size:12px;background:transparent;outline:none;font-family:'Barlow',sans-serif;}
 .sig-block input:focus{border-bottom-color:var(--navy);}
-
+ 
 /* ===== TOAST ===== */
 #toast{position:fixed;bottom:24px;right:24px;background:var(--navy);color:#fff;padding:10px 20px;border-radius:6px;font-size:12px;font-weight:600;box-shadow:0 4px 16px rgba(0,0,0,.25);opacity:0;transform:translateY(10px);transition:all .3s;pointer-events:none;z-index:9999;}
 #toast.show{opacity:1;transform:translateY(0);}
 #toast.green{background:var(--green);}
 #toast.red{background:#c0392b;}
-
+ 
 /* ===== PROJECT BANNER ===== */
 .project-banner{background:linear-gradient(90deg,#1a2d5a,#2a4080);color:#fff;padding:5px 18px;font-size:10px;display:flex;align-items:center;justify-content:space-between;gap:10px;}
 .project-banner span{opacity:.7;}
 .project-banner strong{opacity:1;font-family:'Barlow Condensed',sans-serif;font-size:12px;letter-spacing:0.5px;}
-
+ 
 /* ===== TOOLBAR TOOLTIPS ===== */
 .tbtn{position:relative;}
 .tbtn .tip{
@@ -273,7 +330,7 @@ td.line-total.pos{color:var(--green);}
   border-bottom-color:#1a1a2e;
 }
 .tbtn:hover .tip{ display:block; }
-
+ 
 /* ===== EXPANDING DESCRIPTION FIELD ===== */
 td input.r-desc{
   transition:background .15s, border .15s;
@@ -310,7 +367,7 @@ td input.r-desc:hover{
   border-radius:0 0 5px 5px;color:var(--black);
   background:#fff;
 }
-
+ 
 /* ===== PERMIT TABLES ===== */
 .perm-table{width:100%;border-collapse:collapse;font-size:12px;}
 .perm-table thead tr{background:var(--navy);}
@@ -334,7 +391,7 @@ td input.r-desc:hover{
   position:sticky;left:0;z-index:2;background:inherit;
 }
 .perm-table thead th:first-child{background:var(--navy);z-index:3;}
-
+ 
 /* ===== ADD ROOM TOGGLE BTN ===== */
 .add-room-toggle{
   font-family:'Barlow',sans-serif;font-size:11px;font-weight:600;
@@ -344,21 +401,21 @@ td input.r-desc:hover{
 .add-room-toggle:hover{background:var(--navy);color:#fff;}
 .add-room-toggle.active{background:var(--navy);color:#fff;border-color:var(--navy);}
 .add-room-toggle.active::before{content:'✓ ';}
-
+ 
 /* ===== STATUS BADGE ===== */
 select.stat-sel option[value=""]{color:#aaa;}
-
+ 
 /* ========================================================
    iOS / MOBILE RESPONSIVE OVERRIDES
    All changes below apply only on screens ≤ 768px (phones)
    or ≤ 1024px (tablets). Nothing here removes any data
    or functionality — it only adjusts layout & sizing.
    ======================================================== */
-
+ 
 @media screen and (max-width: 768px) {
   html { font-size: 14px; }
   body { padding: 0; background: #e8eaef; }
-
+ 
   /* Toolbar: stack vertically on phone */
   .toolbar {
     flex-direction: column;
@@ -381,11 +438,11 @@ select.stat-sel option[value=""]{color:#aaa;}
     justify-content: center;
   }
   .tbtn .tip { display: none !important; }
-
+ 
   /* Project info grid: 2 columns on phone */
   .pi-grid { grid-template-columns: 1fr 1fr; }
   .pi-grid .span4 { grid-column: span 2; }
-
+ 
   /* iOS won't zoom if font-size >= 16px */
   .field-group input,
   .field-group select,
@@ -399,7 +456,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     min-height: 36px;
     padding: 6px 8px;
   }
-
+ 
   /* Tabs nav: horizontally scrollable, larger tap area */
   .tabs-nav {
     overflow-x: auto;
@@ -415,7 +472,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     flex-shrink: 0;
   }
   .tab-content { padding: 10px 10px; }
-
+ 
   /* Section card headers */
   .section-card .sh {
     flex-direction: column;
@@ -430,13 +487,13 @@ select.stat-sel option[value=""]{color:#aaa;}
   }
   .weeks-field { font-size: 12px; }
   .weeks-field input { min-height: 36px; font-size: 16px !important; width: 52px; }
-
+ 
   /* SOW tables */
   .sow-table { font-size: 13px; }
   .sow-table th { font-size: 11px; padding: 7px 6px; }
   .sow-table td { padding: 5px 5px; }
   .sow-table input, .sow-table select { font-size: 16px !important; }
-
+ 
   /* Un-sticky the first two columns — sticky causes scroll jank on iOS Safari */
   .sow-table tbody td:nth-child(1),
   .sow-table tbody td:nth-child(2),
@@ -453,16 +510,16 @@ select.stat-sel option[value=""]{color:#aaa;}
     max-width: none;
     min-width: 80px;
   }
-
+ 
   /* Add row button */
   .add-row-btn { font-size: 14px; padding: 10px 14px; min-height: 44px; }
-
+ 
   /* Permit tables */
   .perm-table { font-size: 13px; }
   .perm-table th { font-size: 11px; }
   .perm-table td:first-child,
   .perm-table thead th:first-child { position: relative; left: auto; }
-
+ 
   /* Description popup: full-width bottom sheet */
   .desc-popup {
     position: fixed !important;
@@ -479,7 +536,7 @@ select.stat-sel option[value=""]{color:#aaa;}
   }
   .desc-popup textarea { min-height: 140px; font-size: 16px !important; }
   .desc-popup-label { font-size: 12px; padding: 10px 14px; }
-
+ 
   /* Material link input: bottom sheet */
   .add-link-input {
     position: fixed !important;
@@ -500,38 +557,38 @@ select.stat-sel option[value=""]{color:#aaa;}
   .add-link-input input { width: 100% !important; font-size: 16px !important; padding: 10px; border: 1px solid var(--border); border-radius: 4px; }
   .add-link-input button { width: 100%; padding: 12px; font-size: 15px; min-height: 44px; }
   .mat-link-btn { width: 34px; height: 34px; font-size: 16px; }
-
+ 
   /* Phase summary */
   .phase-summary { flex-direction: column; }
   .phase-summary table { min-width: unset; width: 100%; }
   .phase-summary td { font-size: 13px; padding: 6px 10px; }
-
+ 
   /* Global summary */
   .global-summary { max-width: 100%; }
   .gs-table td { font-size: 13px; padding: 8px 12px; }
   .gs-table .gs-grand { font-size: 16px; }
-
+ 
   /* Sig grid: 2 cols on phone */
   .sig-grid { grid-template-columns: 1fr 1fr; gap: 10px; }
   .sig-block input { font-size: 16px !important; margin-top: 8px; }
-
+ 
   /* Toast */
   #toast { right: 12px; left: 12px; bottom: 16px; font-size: 14px; text-align: center; }
-
+ 
   /* Banner */
   .project-banner { flex-direction: column; font-size: 12px; gap: 4px; padding: 8px 12px; }
-
+ 
   /* Optional rooms toggle buttons */
   .add-room-toggle { font-size: 13px; padding: 9px 14px; min-height: 44px; }
-
+ 
   /* Phase breakdown table */
   .gs-ph-table th, .gs-ph-table td { font-size: 12px; padding: 6px 7px; }
-
+ 
   /* Mat qty tracker */
   .mat-qty-card .mqc-header { font-size: 13px; }
   .mat-qty-card th, .mat-qty-card td { font-size: 12px; }
 }
-
+ 
 /* Tablet / iPad tweaks */
 @media screen and (min-width: 769px) and (max-width: 1024px) {
   html { font-size: 13px; }
@@ -548,7 +605,7 @@ select.stat-sel option[value=""]{color:#aaa;}
 </style>
 </head>
 <body>
-
+ 
 <!-- TOOLBAR -->
 <div class="toolbar no-print">
   <div class="toolbar-logo">
@@ -584,7 +641,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     </button>
   </div>
 </div>
-
+ 
 <div id="toast"></div>
 <div class="desc-popup" id="desc-popup">
   <div class="desc-popup-label">
@@ -593,13 +650,13 @@ select.stat-sel option[value=""]{color:#aaa;}
   </div>
   <textarea id="desc-popup-ta" placeholder="Enter full description, specs, notes..."></textarea>
 </div>
-
+ 
 <div class="wrapper">
 <div class="project-banner no-print" id="project-banner">
   <span>📁 Project File: <strong id="banner-filename">Unsaved — click 💾 Save Progress to create a project file</strong></span>
   <span id="banner-modified" style="color:#f0c060;"></span>
 </div>
-
+ 
 <!-- PROJECT INFO -->
 <div class="project-info">
   <div class="pi-grid">
@@ -627,7 +684,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <textarea id="pm-comments" placeholder="Enter any special instructions, allowances, exclusions, HOA restrictions, material specifications, access notes, safety requirements, historic preservation standards, or other directives for the contractor..."></textarea>
   </div>
 </div>
-
+ 
 <!-- TABS NAV -->
 <div class="tabs-nav no-print">
   <button class="tab-btn active" onclick="switchTab('demo')">🔨 Demo &amp; Structural</button>
@@ -638,10 +695,10 @@ select.stat-sel option[value=""]{color:#aaa;}
   <button class="tab-btn" onclick="switchTab('materials')">📦 Materials</button>
   <button class="tab-btn" onclick="switchTab('summary')">📊 Project Summary</button>
 </div>
-
+ 
 <!-- TAB PANELS -->
 <div class="tab-content">
-
+ 
 <!-- ===== DEMO & STRUCTURAL ===== -->
 <div id="tab-demo" class="tabpanel active">
   <!-- DEMOLITION -->
@@ -667,7 +724,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addRow('tbl-demo','demo')">+ Add Row</button>
     <div class="phase-summary" id="ps-demo"></div>
   </div>
-
+ 
   <!-- FOUNDATION & STRUCTURAL -->
   <div class="section-card" id="sc-found">
     <div class="sh">
@@ -688,7 +745,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addRow('tbl-found','found')">+ Add Row</button>
     <div class="phase-summary" id="ps-found"></div>
   </div>
-
+ 
   <!-- ROOFING -->
   <div class="section-card" id="sc-roof">
     <div class="sh">
@@ -710,10 +767,10 @@ select.stat-sel option[value=""]{color:#aaa;}
     <div class="phase-summary" id="ps-roof"></div>
   </div>
 </div>
-
+ 
 <!-- ===== EXTERIOR ===== -->
 <div id="tab-ext" class="tabpanel">
-
+ 
   <!-- SIDING -->
   <div class="section-card">
     <div class="sh">
@@ -734,7 +791,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addRow('tbl-ext-siding','ext-siding')">+ Add Row</button>
     <div class="phase-summary" id="ps-ext-siding"></div>
   </div>
-
+ 
   <!-- EXTERIOR PAINT -->
   <div class="section-card">
     <div class="sh">
@@ -755,7 +812,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addRow('tbl-ext-paint','ext-paint')">+ Add Row</button>
     <div class="phase-summary" id="ps-ext-paint"></div>
   </div>
-
+ 
   <!-- TRIM & MILLWORK -->
   <div class="section-card">
     <div class="sh">
@@ -776,7 +833,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addRow('tbl-ext-trim','ext-trim')">+ Add Row</button>
     <div class="phase-summary" id="ps-ext-trim"></div>
   </div>
-
+ 
   <!-- GUTTERS -->
   <div class="section-card">
     <div class="sh">
@@ -797,7 +854,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addRow('tbl-ext-gutter','ext-gutter')">+ Add Row</button>
     <div class="phase-summary" id="ps-ext-gutter"></div>
   </div>
-
+ 
   <!-- DOORS -->
   <div class="section-card">
     <div class="sh">
@@ -818,7 +875,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addRow('tbl-ext-doors','ext-doors')">+ Add Row</button>
     <div class="phase-summary" id="ps-ext-doors"></div>
   </div>
-
+ 
   <!-- WINDOWS -->
   <div class="section-card">
     <div class="sh">
@@ -839,7 +896,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addRow('tbl-ext-windows','ext-windows')">+ Add Row</button>
     <div class="phase-summary" id="ps-ext-windows"></div>
   </div>
-
+ 
   <!-- HARDSCAPE -->
   <div class="section-card">
     <div class="sh">
@@ -860,7 +917,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addRow('tbl-hardscape','hardscape')">+ Add Row</button>
     <div class="phase-summary" id="ps-hardscape"></div>
   </div>
-
+ 
   <!-- TREE WORK & LANDSCAPING -->
   <div class="section-card">
     <div class="sh">
@@ -882,7 +939,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <div class="phase-summary" id="ps-tree"></div>
   </div>
 </div>
-
+ 
 <!-- ===== MEP ===== -->
 <div id="tab-mep" class="tabpanel">
   <!-- PLUMBING -->
@@ -905,7 +962,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addRow('tbl-plumb','plumb')">+ Add Row</button>
     <div class="phase-summary" id="ps-plumb"></div>
   </div>
-
+ 
   <!-- ELECTRICAL -->
   <div class="section-card">
     <div class="sh">
@@ -926,7 +983,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addRow('tbl-elec','elec')">+ Add Row</button>
     <div class="phase-summary" id="ps-elec"></div>
   </div>
-
+ 
   <!-- HVAC -->
   <div class="section-card">
     <div class="sh">
@@ -948,10 +1005,10 @@ select.stat-sel option[value=""]{color:#aaa;}
     <div class="phase-summary" id="ps-hvac"></div>
   </div>
 </div>
-
+ 
 <!-- ===== INTERIOR SPACES ===== -->
 <div id="tab-interior" class="tabpanel">
-
+ 
   <!-- LIVING ROOM -->
   <div class="section-card">
     <div class="sh"><div class="sh-left">🛋️ LIVING ROOM</div>
@@ -966,7 +1023,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addRow('tbl-int-living','int-living')">+ Add Row</button>
     <div class="phase-summary" id="ps-int-living"></div>
   </div>
-
+ 
   <!-- DINING ROOM -->
   <div class="section-card">
     <div class="sh"><div class="sh-left">🍽️ DINING ROOM</div>
@@ -981,7 +1038,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addRow('tbl-int-dining','int-dining')">+ Add Row</button>
     <div class="phase-summary" id="ps-int-dining"></div>
   </div>
-
+ 
   <!-- KITCHEN -->
   <div class="section-card">
     <div class="sh"><div class="sh-left">🍳 KITCHEN</div>
@@ -996,7 +1053,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addRow('tbl-int-kitchen','int-kitchen')">+ Add Row</button>
     <div class="phase-summary" id="ps-int-kitchen"></div>
   </div>
-
+ 
   <!-- MASTER BEDROOM -->
   <div class="section-card">
     <div class="sh"><div class="sh-left">🛏️ MASTER BEDROOM</div>
@@ -1011,7 +1068,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addRow('tbl-int-master','int-master')">+ Add Row</button>
     <div class="phase-summary" id="ps-int-master"></div>
   </div>
-
+ 
   <!-- BEDROOM 2 -->
   <div class="section-card">
     <div class="sh"><div class="sh-left">🛏️ BEDROOM 2</div>
@@ -1026,7 +1083,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addRow('tbl-int-bed2','int-bed2')">+ Add Row</button>
     <div class="phase-summary" id="ps-int-bed2"></div>
   </div>
-
+ 
   <!-- BEDROOM 3 -->
   <div class="section-card">
     <div class="sh"><div class="sh-left">🛏️ BEDROOM 3</div>
@@ -1041,7 +1098,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addRow('tbl-int-bed3','int-bed3')">+ Add Row</button>
     <div class="phase-summary" id="ps-int-bed3"></div>
   </div>
-
+ 
   <!-- BATHROOM 1 -->
   <div class="section-card">
     <div class="sh"><div class="sh-left">🚿 BATHROOM 1</div>
@@ -1056,7 +1113,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addRow('tbl-int-bath1','int-bath1')">+ Add Row</button>
     <div class="phase-summary" id="ps-int-bath1"></div>
   </div>
-
+ 
   <!-- BATHROOM 2 -->
   <div class="section-card">
     <div class="sh"><div class="sh-left">🚿 BATHROOM 2</div>
@@ -1071,7 +1128,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addRow('tbl-int-bath2','int-bath2')">+ Add Row</button>
     <div class="phase-summary" id="ps-int-bath2"></div>
   </div>
-
+ 
   <!-- HALF BATH / POWDER ROOM -->
   <div class="section-card">
     <div class="sh"><div class="sh-left">🚽 HALF BATH / POWDER ROOM</div>
@@ -1086,7 +1143,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addRow('tbl-int-halfbath','int-halfbath')">+ Add Row</button>
     <div class="phase-summary" id="ps-int-halfbath"></div>
   </div>
-
+ 
   <!-- HALLWAY & STAIRWELL -->
   <div class="section-card">
     <div class="sh"><div class="sh-left">🪜 HALLWAY &amp; STAIRWELL</div>
@@ -1101,7 +1158,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addRow('tbl-int-hall','int-hall')">+ Add Row</button>
     <div class="phase-summary" id="ps-int-hall"></div>
   </div>
-
+ 
   <!-- BASEMENT -->
   <div class="section-card">
     <div class="sh"><div class="sh-left">⬇️ BASEMENT / LOWER LEVEL</div>
@@ -1116,7 +1173,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addRow('tbl-int-basement','int-basement')">+ Add Row</button>
     <div class="phase-summary" id="ps-int-basement"></div>
   </div>
-
+ 
   <!-- UTILITY ROOM -->
   <div class="section-card">
     <div class="sh"><div class="sh-left">🔌 UTILITY ROOM</div>
@@ -1131,7 +1188,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addRow('tbl-int-utility','int-utility')">+ Add Row</button>
     <div class="phase-summary" id="ps-int-utility"></div>
   </div>
-
+ 
   <!-- BEDROOM 4 (OPTIONAL) -->
   <div class="section-card" id="card-int-bed4" style="display:none;">
     <div class="sh"><div class="sh-left">🛏️ BEDROOM 4</div>
@@ -1146,7 +1203,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addRow('tbl-int-bed4','int-bed4')">+ Add Row</button>
     <div class="phase-summary" id="ps-int-bed4"></div>
   </div>
-
+ 
   <!-- BEDROOM 5 (OPTIONAL) -->
   <div class="section-card" id="card-int-bed5" style="display:none;">
     <div class="sh"><div class="sh-left">🛏️ BEDROOM 5</div>
@@ -1161,7 +1218,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addRow('tbl-int-bed5','int-bed5')">+ Add Row</button>
     <div class="phase-summary" id="ps-int-bed5"></div>
   </div>
-
+ 
   <!-- BATHROOM 3 (OPTIONAL) -->
   <div class="section-card" id="card-int-bath3" style="display:none;">
     <div class="sh"><div class="sh-left">🚿 BATHROOM 3</div>
@@ -1176,7 +1233,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addRow('tbl-int-bath3','int-bath3')">+ Add Row</button>
     <div class="phase-summary" id="ps-int-bath3"></div>
   </div>
-
+ 
   <!-- BATHROOM 4 (OPTIONAL) -->
   <div class="section-card" id="card-int-bath4" style="display:none;">
     <div class="sh"><div class="sh-left">🚿 BATHROOM 4</div>
@@ -1191,7 +1248,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addRow('tbl-int-bath4','int-bath4')">+ Add Row</button>
     <div class="phase-summary" id="ps-int-bath4"></div>
   </div>
-
+ 
   <!-- ADDITIONAL SPACE (Den / Attic / Office / Flex) (OPTIONAL) -->
   <div class="section-card" id="card-int-flex1" style="display:none;">
     <div class="sh"><div class="sh-left">🏷️ ADDITIONAL SPACE 1 — <input type="text" id="label-int-flex1" placeholder="e.g. Den, Attic, Home Office, Flex Room..." oninput="document.querySelector('#card-int-flex1 .sh-left').childNodes[0].textContent=''" style="background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,.5);color:#fff;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:13px;width:260px;outline:none;padding:0 4px;"></div>
@@ -1206,7 +1263,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addRow('tbl-int-flex1','int-flex1')">+ Add Row</button>
     <div class="phase-summary" id="ps-int-flex1"></div>
   </div>
-
+ 
   <!-- ADDITIONAL SPACE 2 (OPTIONAL) -->
   <div class="section-card" id="card-int-flex2" style="display:none;">
     <div class="sh"><div class="sh-left">🏷️ ADDITIONAL SPACE 2 — <input type="text" id="label-int-flex2" placeholder="e.g. Garage, Mudroom, Sunroom..." style="background:transparent;border:none;border-bottom:1px solid rgba(255,255,255,.5);color:#fff;font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:13px;width:260px;outline:none;padding:0 4px;"></div>
@@ -1221,7 +1278,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addRow('tbl-int-flex2','int-flex2')">+ Add Row</button>
     <div class="phase-summary" id="ps-int-flex2"></div>
   </div>
-
+ 
   <!-- ADD OPTIONAL ROOMS BUTTON BAR -->
   <div class="no-print" style="background:#f4f5f7;border:1px dashed #b0b8cc;border-radius:6px;padding:14px 18px;margin-top:6px;">
     <div style="font-family:'Barlow Condensed',sans-serif;font-weight:700;font-size:13px;color:var(--navy);margin-bottom:10px;letter-spacing:0.5px;">➕ ADD OPTIONAL ROOMS / SPACES</div>
@@ -1234,13 +1291,13 @@ select.stat-sel option[value=""]{color:#aaa;}
       <button onclick="toggleIntRoom('flex2','🏷️ Additional Space 2')" id="btn-int-flex2" class="add-room-toggle">+ Additional Space 2</button>
     </div>
   </div>
-
+ 
 </div>
-
+ 
 <!-- ===== FINISHES ===== -->
 <!-- ===== PERMITS & MISC ===== -->
 <div id="tab-permits" class="tabpanel">
-
+ 
   <!-- BUILDING PERMITS -->
   <div class="section-card">
     <div class="sh">
@@ -1264,7 +1321,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addPermRow('tbl-perm-bldg','perm-bldg')">+ Add Row</button>
     <div class="phase-summary" id="ps-perm-bldg"></div>
   </div>
-
+ 
   <!-- MEP PERMITS -->
   <div class="section-card">
     <div class="sh">
@@ -1288,7 +1345,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addPermRow('tbl-perm-mep','perm-mep')">+ Add Row</button>
     <div class="phase-summary" id="ps-perm-mep"></div>
   </div>
-
+ 
   <!-- HISTORIC DISTRICT -->
   <div class="section-card">
     <div class="sh" style="background:#6b3a00;">
@@ -1312,7 +1369,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addPermRow('tbl-perm-hist','perm-hist')">+ Add Row</button>
     <div class="phase-summary" id="ps-perm-hist"></div>
   </div>
-
+ 
   <!-- INSPECTIONS & FEES -->
   <div class="section-card">
     <div class="sh">
@@ -1336,7 +1393,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addPermRow('tbl-perm-insp','perm-insp')">+ Add Row</button>
     <div class="phase-summary" id="ps-perm-insp"></div>
   </div>
-
+ 
   <!-- MISCELLANEOUS -->
   <div class="section-card">
     <div class="sh">
@@ -1360,9 +1417,9 @@ select.stat-sel option[value=""]{color:#aaa;}
     <button class="add-row-btn" onclick="addPermRow('tbl-perm-misc','perm-misc')">+ Add Row</button>
     <div class="phase-summary" id="ps-perm-misc"></div>
   </div>
-
+ 
 </div>
-
+ 
 <!-- ===== MATERIALS ===== -->
 <div id="tab-materials" class="tabpanel">
   <div class="gs-phase-breakdown">
@@ -1373,7 +1430,7 @@ select.stat-sel option[value=""]{color:#aaa;}
     </div>
   </div>
 </div>
-
+ 
 <!-- ===== SUMMARY ===== -->
 <div id="tab-summary" class="tabpanel">
   <div class="gs-phase-breakdown">
@@ -1383,7 +1440,7 @@ select.stat-sel option[value=""]{color:#aaa;}
       <tbody id="gs-phase-tbody"></tbody>
     </table>
   </div>
-
+ 
   <div class="global-summary">
     <table class="gs-table">
       <tr><td class="gs-lbl">Total Materials</td><td class="gs-val" id="gs-mat">$0.00</td></tr>
@@ -1397,7 +1454,7 @@ select.stat-sel option[value=""]{color:#aaa;}
       <div class="field-group"><label>Total Estimated Project Duration (Weeks)</label><input type="text" id="gs-total-weeks" readonly placeholder="Auto-calculated" style="font-weight:700;font-size:14px;color:var(--navy);"></div>
     </div>
   </div>
-
+ 
   <div style="margin-top:20px;">
   <div class="sig-grid">
     <div class="sig-block"><input type="text" placeholder="Richard / Authorized Rep"><label>Owner / Authorized Representative &amp; Date</label></div>
@@ -1407,11 +1464,11 @@ select.stat-sel option[value=""]{color:#aaa;}
   </div>
   </div>
 </div>
-
+ 
 </div><!-- /tab-content -->
-
+ 
 </div><!-- /wrapper -->
-
+ 
 <script>
 // ===== DATA =====
 var PHASES = [
@@ -1852,7 +1909,7 @@ var PHASES = [
      {room:'', item:'Project Contingency Allowance',mat:'Allowance TBD'}
    ]}
 ];
-
+ 
 var MAT_OPTIONS_MAP = {
   'default':['-- Select Material --','Custom / Other','N/A','Allowance TBD'],
   demo:['Dumpster 10-Yd','Dumpster 20-Yd','Dumpster 30-Yd','Debris Bags','Hazmat Bags','Test Kit – Asbestos','Test Kit – Lead Paint','N/A','Custom / Other'],
@@ -1894,11 +1951,11 @@ var MAT_OPTIONS_MAP = {
   'perm-insp':['Inspection Fee','HERS Rating Fee','Lead Test Kit','Test Kit – Asbestos','Radon Test Kit','Mold Assessment Fee','Energy Audit Fee','Structural Engineering Fee','Custom / Other'],
   'perm-misc':['Dumpster 10-Yd','Dumpster 20-Yd','Dumpster 30-Yd','Temporary Fence','N/A','Allowance TBD','Custom / Other'],
 };
-
+ 
 var UNIT_OPTIONS = ['Lump Sum (LS)','Each (EA)','Square Foot (SF)','Linear Foot (LF)','Square Yard (SY)','Hour (HR)','Day (DAY)','Ton (TON)','Cubic Yard (CY)','Gallon (GAL)','Board Foot (BF)','Pound (LB)','Square/100SF (SQ)','Pair (PR)','Box (BOX)'];
 var STATUS_OPTIONS = ['','Pending','Approved','In Progress','Complete','On Hold','N/A'];
 var PURCH_OPTIONS = ['-- Select --','Contractor','NYEG'];
-
+ 
 // ===== INIT =====
 function init(){
   PHASES.forEach(function(ph){
@@ -1918,7 +1975,7 @@ function init(){
   calcAll();
   initPermitTables();
 }
-
+ 
 function addRow(tableId, phaseId, prefill){
   var tbody = document.querySelector('#'+tableId+' tbody');
   if(!tbody) return;
@@ -1956,7 +2013,7 @@ function addRow(tableId, phaseId, prefill){
     }
   });
 }
-
+ 
 function toggleLinkInput(btn){
   var box = btn.nextElementSibling;
   var showing = box.style.display==='block';
@@ -1982,10 +2039,10 @@ document.addEventListener('touchstart', function(e){
     document.querySelectorAll('.add-link-input').forEach(function(el){el.style.display='none';});
   }
 }, {passive:true});
-
+ 
 function pn(v){var n=parseFloat((v||'').toString().replace(/[^0-9.]/g,''));return isNaN(n)?0:n;}
 function fmt(n){return'$'+(isNaN(n)?0:n).toFixed(2).replace(/\B(?=(\d{3})+(?!\d))/g,',');}
-
+ 
 function calcRow(tr, phaseId){
   if(!tr) return;
   var m=pn(tr.querySelector('.r-matcost').value);
@@ -1996,7 +2053,7 @@ function calcRow(tr, phaseId){
   renderPhaseSum(phaseId);
   calcAll();
 }
-
+ 
 function renderPhaseSum(phaseId){
   var tbl = document.getElementById('tbl-'+phaseId);
   if(!tbl) return;
@@ -2012,7 +2069,7 @@ function renderPhaseSum(phaseId){
   var psEl = document.getElementById('ps-'+phaseId);
   if(psEl) psEl.innerHTML = tot>0 ? '<table><tr><td class="ps-lbl">Materials</td><td class="ps-val">'+fmt(m)+'</td></tr><tr><td class="ps-lbl">Labor</td><td class="ps-val">'+fmt(l)+'</td></tr><tr><td class="ps-lbl">Subcontractors</td><td class="ps-val">'+fmt(s)+'</td></tr><tr><td class="ps-grand">Phase Total</td><td class="ps-grand ps-val">'+fmt(tot)+'</td></tr></table>' : '';
 }
-
+ 
 function calcAll(){
   var gm=0,gl=0,gs=0;
   PHASES.forEach(function(ph){
@@ -2042,7 +2099,7 @@ function calcAll(){
   document.getElementById('gs-subtotal').textContent=fmt(sub);
   document.getElementById('gs-cont').textContent=fmt(cont);
   document.getElementById('gs-grand').textContent=fmt(grand);
-
+ 
   // Phase breakdown table
   var phaseTbody = document.getElementById('gs-phase-tbody');
   if(phaseTbody){
@@ -2072,12 +2129,12 @@ function calcAll(){
   }
   calcMatQty();
 }
-
+ 
 // ===== MATERIAL QUANTITY TRACKER =====
 function calcMatQty(){
   var grid = document.getElementById('mat-qty-grid');
   if(!grid) return;
-
+ 
   // Collect ALL rows with a material selected
   var allRows = [];
   PHASES.forEach(function(ph){
@@ -2108,14 +2165,14 @@ function calcMatQty(){
       });
     });
   });
-
+ 
   grid.innerHTML = '';
-
+ 
   if(allRows.length === 0){
     grid.innerHTML = '<div style="grid-column:span 2;color:#aaa;font-size:11px;font-style:italic;">No materials selected yet. Select materials in any phase tab to populate this list.</div>';
     return;
   }
-
+ 
   // Aggregate by material name → sum qty and cost
   var matMap = {};
   allRows.forEach(function(r){
@@ -2134,22 +2191,22 @@ function calcMatQty(){
     // If purchaser differs across rows, show "Mixed"
     if(matMap[key].purch !== r.purch && r.purch !== '—') matMap[key].purch = 'Mixed';
   });
-
+ 
   var matList = Object.keys(matMap).map(function(k){ return matMap[k]; });
   // Sort alphabetically
   matList.sort(function(a,b){ return a.mat.localeCompare(b.mat); });
-
+ 
   var totalItems = matList.length;
   var totalCost  = matList.reduce(function(s,r){ return s + r.totalCost; }, 0);
-
+ 
   // Summary stat cards
   var nyegCount = matList.filter(function(r){ return r.purch==='NYEG'; }).length;
   var gcCount   = matList.filter(function(r){ return r.purch==='Contractor'; }).length;
   var unassigned = matList.filter(function(r){ return r.purch==='-- Select --' || r.purch==='—' || r.purch==='Mixed'; }).length;
-
+ 
   var wrap = document.createElement('div');
   wrap.style.gridColumn = 'span 2';
-
+ 
   // Stat bar
   var statBar =
     '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;">'
@@ -2158,7 +2215,7 @@ function calcMatQty(){
     +statCard('🏢 NYEG Purchasing', nyegCount + ' items', 'var(--blue)')
     +statCard('🔨 GC Purchasing', gcCount + ' items', 'var(--amber)')
     +'</div>';
-
+ 
   // Table rows
   var rows = '';
   matList.forEach(function(r, i){
@@ -2167,15 +2224,15 @@ function calcMatQty(){
       : r.purch === 'Contractor'
       ? '<span style="background:#b87800;color:#fff;border-radius:3px;padding:1px 7px;font-size:10px;font-weight:700;">GC</span>'
       : '<span style="background:#ccc;color:#555;border-radius:3px;padding:1px 7px;font-size:10px;">'+r.purch+'</span>';
-
+ 
     var locStr = r.locations.length > 0
       ? '<div style="font-size:10px;color:#888;margin-top:2px;">📍 '+r.locations.slice(0,4).join(' · ')+(r.locations.length>4?' +'+( r.locations.length-4)+' more':'')+'</div>'
       : '';
-
+ 
     var unitCostStr = (r.totalQty > 0 && r.totalCost > 0)
       ? fmt(r.totalCost / r.totalQty) + ' / unit'
       : '—';
-
+ 
     rows +=
       '<tr>'
       +'<td style="text-align:center;color:#aaa;font-size:10px;width:3%;">'+(i+1)+'</td>'
@@ -2191,7 +2248,7 @@ function calcMatQty(){
       +'<td style="text-align:center;width:8%;"><input type="checkbox" style="width:16px;height:16px;cursor:pointer;" title="Mark as delivered"></td>'
       +'</tr>';
   });
-
+ 
   // Footer totals row
   rows +=
     '<tr style="background:var(--navy);color:#fff;font-weight:900;font-size:12px;">'
@@ -2200,7 +2257,7 @@ function calcMatQty(){
     +'<td style="text-align:right;">'+fmt(totalCost)+'</td>'
     +'<td colspan="4"></td>'
     +'</tr>';
-
+ 
   wrap.innerHTML = statBar +
     '<div class="mat-qty-card">'
     +'<div class="mqc-header">📋 Master Material &amp; Purchasing List'
@@ -2220,23 +2277,26 @@ function calcMatQty(){
     +'</tr></thead>'
     +'<tbody>'+rows+'</tbody>'
     +'</table></div></div>';
-
+ 
   grid.appendChild(wrap);
 }
-
+ 
 function statCard(label, value, color){
   return '<div style="background:'+color+';color:#fff;border-radius:5px;padding:10px 14px;">'
     +'<div style="font-size:10px;opacity:.8;text-transform:uppercase;letter-spacing:0.5px;">'+label+'</div>'
     +'<div style="font-family:\'Barlow Condensed\',sans-serif;font-weight:700;font-size:20px;margin-top:2px;">'+value+'</div>'
     +'</div>';
 }
-
+ 
 // ===== SAVE / PDF =====
 function savePDF(){
-  // Small delay ensures iOS Safari renders everything before print dialog
-  setTimeout(function(){ window.print(); }, 100);
+  // Force recalculate summary so values appear when all tabs print
+  calcAll();
+  calcMatQty();
+  // Small delay ensures browser renders everything before print dialog opens
+  setTimeout(function(){ window.print(); }, 300);
 }
-
+ 
 // ===== SHARE LINK =====
 function shareLink(){
   var url = window.location.href.split('?')[0].split('#')[0];
@@ -2257,7 +2317,7 @@ function shareLink(){
     prompt('Copy this link:', url);
   }
 }
-
+ 
 // ===== TABS =====
 function switchTab(name){
   document.querySelectorAll('.tab-btn').forEach(function(b){b.classList.remove('active');});
@@ -2269,7 +2329,7 @@ function switchTab(name){
   if(name==='summary'){ calcAll(); calcMatQty(); }
   if(name==='materials') calcMatQty();
 }
-
+ 
 // ===== TOAST =====
 function toast(msg, type){
   var el = document.getElementById('toast');
@@ -2278,32 +2338,32 @@ function toast(msg, type){
   clearTimeout(el._t);
   el._t = setTimeout(function(){ el.className=''; }, 3200);
 }
-
+ 
 // ===== PROJECT FILENAME HELPER =====
 function getProjectSlug(){
   var addr = (document.getElementById('prop-addr')||{}).value||'';
   var slug = addr.replace(/[^a-zA-Z0-9\s]/g,'').trim().replace(/\s+/g,'-').substring(0,40) || 'NYEG-Project';
   return 'NYEG-SOW_' + slug;
 }
-
+ 
 // ===== COLLECT ALL FORM DATA =====
 function collectFormData(){
   var data = { version: '2.0', savedAt: new Date().toISOString(), projectFields: {}, phases: {}, pmComments: '', weeks: {} };
-
+ 
   // Project header fields
   ['prop-addr','prop-owner','prop-pm','prop-date','prop-start','prop-end','prop-type','prop-permit'].forEach(function(id){
     var el = document.getElementById(id);
     data.projectFields[id] = el ? el.value : '';
   });
-
+ 
   // PM comments
   data.pmComments = (document.getElementById('pm-comments')||{}).value||'';
-
+ 
   // Phase weeks
   document.querySelectorAll('.phase-weeks').forEach(function(el){
     data.weeks[el.getAttribute('data-phase')] = el.value;
   });
-
+ 
   // Phase table rows
   PHASES.forEach(function(ph){
     var tbl = document.getElementById('tbl-'+ph.id);
@@ -2324,35 +2384,59 @@ function collectFormData(){
       });
     });
   });
-
+ 
+  // Permit table rows
+  data.permitRows = {};
+  PERM_PHASES.forEach(function(pid){
+    var tbl = document.getElementById('tbl-'+pid);
+    if(!tbl) return;
+    data.permitRows[pid] = [];
+    tbl.querySelectorAll('tbody tr').forEach(function(tr){
+      data.permitRows[pid].push({
+        item  : (tr.querySelector('.pr-item')||{}).value||'',
+        desc  : (tr.querySelector('.pr-desc')||{}).value||'',
+        type  : (tr.querySelector('.pr-type')||{}).value||'',
+        purch : (tr.querySelector('.pr-purch')||{}).value||'',
+        fee   : (tr.querySelector('.pr-fee')||{}).value||'',
+        labor : (tr.querySelector('.pr-labor')||{}).value||'',
+        stat  : (tr.querySelector('.pr-stat')||{}).value||''
+      });
+    });
+  });
+ 
   // Signature fields
   data.signatures = [];
   document.querySelectorAll('.sig-block input').forEach(function(el){ data.signatures.push(el.value); });
-
+ 
   return data;
 }
-
+ 
 // ===== RESTORE ALL FORM DATA =====
 function restoreFormData(data){
-  if(!data || !data.version) return false;
-
-  // Project fields
-  Object.keys(data.projectFields||{}).forEach(function(id){
+  if(!data) return false;
+  if(!data.version && !data.projectFields) return false;
+ 
+  // Project fields — restore all header inputs explicitly
+  var projectIds = ['prop-addr','prop-owner','prop-pm','prop-date','prop-start','prop-end','prop-type','prop-permit'];
+  projectIds.forEach(function(id){
     var el = document.getElementById(id);
-    if(el) el.value = data.projectFields[id];
+    if(el && data.projectFields && data.projectFields[id] !== undefined){
+      el.value = data.projectFields[id];
+    }
   });
-
+ 
+  // PM comments
   if(data.pmComments !== undefined){
     var pm = document.getElementById('pm-comments');
     if(pm) pm.value = data.pmComments;
   }
-
+ 
   // Phase weeks
   Object.keys(data.weeks||{}).forEach(function(ph){
     var el = document.querySelector('.phase-weeks[data-phase="'+ph+'"]');
     if(el) el.value = data.weeks[ph];
   });
-
+ 
   // Phase rows — clear tbody, re-add rows with saved data
   PHASES.forEach(function(ph){
     if(!data.phases || !data.phases[ph.id]) return;
@@ -2360,11 +2444,20 @@ function restoreFormData(data){
     if(!tbl) return;
     var tbody = tbl.querySelector('tbody');
     tbody.innerHTML = '';
+ 
+    // Show optional room cards if they have saved data
+    var card = document.getElementById('card-'+ph.id);
+    if(card && card.style.display==='none' && data.phases[ph.id].length > 0){
+      card.style.display = 'block';
+      var btn = document.getElementById('btn-'+ph.id);
+      if(btn) btn.classList.add('active');
+    }
+ 
     data.phases[ph.id].forEach(function(row){
       addRow('tbl-'+ph.id, ph.id);
       var tr = tbody.lastElementChild;
       if(!tr) return;
-      var setVal = function(sel, val){ var el=tr.querySelector(sel); if(el) el.value=val; };
+      var setVal = function(sel, val){ var el=tr.querySelector(sel); if(el && val!==undefined) el.value=val; };
       setVal('.r-room',    row.room);
       setVal('.r-item',    row.item);
       setVal('.r-desc',    row.desc);
@@ -2391,74 +2484,130 @@ function restoreFormData(data){
     });
     renderPhaseSum(ph.id);
   });
-
+ 
+  // Permit rows
+  if(data.permitRows){
+    PERM_PHASES.forEach(function(pid){
+      if(!data.permitRows[pid]) return;
+      var tbl = document.getElementById('tbl-'+pid);
+      if(!tbl) return;
+      var tbody = tbl.querySelector('tbody');
+      tbody.innerHTML = '';
+      data.permitRows[pid].forEach(function(row){
+        addPermRow('tbl-'+pid, pid);
+        var tr = tbody.lastElementChild;
+        if(!tr) return;
+        var setVal = function(sel, val){ var el=tr.querySelector(sel); if(el && val!==undefined) el.value=val; };
+        setVal('.pr-item',  row.item);
+        setVal('.pr-desc',  row.desc);
+        setVal('.pr-type',  row.type);
+        setVal('.pr-purch', row.purch);
+        setVal('.pr-fee',   row.fee);
+        setVal('.pr-labor', row.labor);
+        setVal('.pr-stat',  row.stat);
+        calcPermRow(tr, pid);
+      });
+    });
+  }
+ 
   // Signatures
   if(data.signatures){
     var sigs = document.querySelectorAll('.sig-block input');
     data.signatures.forEach(function(v,i){ if(sigs[i]) sigs[i].value=v; });
   }
-
+ 
   calcAll();
   return true;
 }
-
+ 
 // ===== 💾 SAVE PROGRESS (JSON) =====
 function saveProgress(){
   var data = collectFormData();
-  var slug = getProjectSlug();
-  var filename = slug + '.json';
+ 
+  // Build filename from property address
+  var addr = (document.getElementById('prop-addr')||{}).value||'';
+  var slug = addr.replace(/[^a-zA-Z0-9\s]/g,'').trim().replace(/\s+/g,'-').substring(0,50) || 'NYEG-Project';
+  var filename = 'NYEG-SOW_' + slug + '.json';
+ 
   var json = JSON.stringify(data, null, 2);
-  var blob = new Blob([json], {type:'application/json'});
-  var url = URL.createObjectURL(blob);
-  var a = document.createElement('a'); a.href=url; a.download=filename; a.click();
-  URL.revokeObjectURL(url);
+ 
+  // Use data URI instead of Blob URL — works in Chrome on iOS and all browsers
+  try {
+    // Try modern download approach first (desktop browsers)
+    var blob = new Blob([json], {type:'application/json'});
+    var url = URL.createObjectURL(blob);
+    var a = document.createElement('a');
+    a.href = url;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    setTimeout(function(){ URL.revokeObjectURL(url); }, 1000);
+  } catch(e) {
+    // Fallback: data URI (works on iOS Chrome)
+    var dataUri = 'data:application/json;charset=utf-8,' + encodeURIComponent(json);
+    var a = document.createElement('a');
+    a.href = dataUri;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+  }
+ 
   document.getElementById('banner-filename').textContent = filename;
   document.getElementById('banner-modified').textContent = '✓ Saved ' + new Date().toLocaleTimeString();
-  toast('✓ Progress saved as ' + filename, 'green');
+  toast('✓ Saved as ' + filename + ' — check your Downloads folder', 'green');
 }
-
+ 
 // ===== 📂 LOAD SAVED FORM =====
 function loadProgress(event){
   var file = event.target.files[0];
   if(!file) return;
   var reader = new FileReader();
   reader.onload = function(e){
+    var raw = e.target.result;
+    // Detect if Chrome saved HTML instead of JSON (common iOS Chrome bug)
+    if(raw.trim().charAt(0) === '<'){
+      toast('⚠️ This file was saved incorrectly by Chrome. Please use Safari at sow.nyenglishgroup.com to save and load forms.', 'red');
+      event.target.value = '';
+      return;
+    }
     try {
-      var data = JSON.parse(e.target.result);
+      var data = JSON.parse(raw);
       var ok = restoreFormData(data);
       if(ok){
         document.getElementById('banner-filename').textContent = file.name;
         document.getElementById('banner-modified').textContent = '↩ Loaded ' + new Date().toLocaleTimeString();
         toast('✓ Form loaded: ' + file.name, 'green');
       } else {
-        toast('⚠️ Could not read file — check format', 'red');
+        toast('⚠️ Could not read file — make sure it was saved using 💾 Save Progress', 'red');
       }
     } catch(err){
-      toast('⚠️ Invalid file: ' + err.message, 'red');
+      toast('⚠️ Invalid file — use Safari to save forms for best compatibility', 'red');
     }
   };
   reader.readAsText(file);
   event.target.value = '';
 }
-
+ 
 // ===== 📤 DOWNLOAD SNAPSHOT (self-contained HTML with data baked in) =====
 function downloadSnapshot(){
   var data = collectFormData();
   var slug = getProjectSlug();
   var filename = slug + '_SNAPSHOT.html';
-
+ 
   // Read the current page HTML and inject saved data as a preload script
   var html = document.documentElement.outerHTML;
   var preloadScript = '<script id="preload-data">window.__NYEG_PRELOAD__=' + JSON.stringify(data) + ';<\/script>';
-
+ 
   // Insert before closing </head>
   html = html.replace('</head>', preloadScript + '</head>');
-
+ 
   // Update title to include project name
   var addr = data.projectFields['prop-addr'] || 'Project';
   html = html.replace('<title>NYEG Room-by-Room Rehab SOW & Bid Comparison</title>',
     '<title>NYEG SOW — ' + addr + '</title>');
-
+ 
   var blob = new Blob([html], {type:'text/html'});
   var url = URL.createObjectURL(blob);
   var a = document.createElement('a'); a.href=url; a.download=filename; a.click();
@@ -2466,7 +2615,7 @@ function downloadSnapshot(){
   document.getElementById('banner-filename').textContent = filename;
   toast('✓ Snapshot downloaded: ' + filename + ' — attach to email and send', 'green');
 }
-
+ 
 // ===== PRELOAD ON PAGE OPEN =====
 (function(){
   if(window.__NYEG_PRELOAD__){
@@ -2483,7 +2632,7 @@ function downloadSnapshot(){
     });
   }
 })();
-
+ 
 // ===== MARK MODIFIED =====
 document.addEventListener('input', function(){
   var mod = document.getElementById('banner-modified');
@@ -2492,8 +2641,8 @@ document.addEventListener('input', function(){
     mod.style.color = '#f0c060';
   }
 });
-
-
+ 
+ 
 function clearAll(){
   if(!confirm('Clear all entered data? This cannot be undone.'))return;
   document.querySelectorAll('input[type=text],input[type=date],input[type=number]').forEach(function(i){i.value='';});
@@ -2508,10 +2657,10 @@ function clearAll(){
   });
   calcAll();
 }
-
+ 
 // ===== PERMIT TABLE ROW BUILDER =====
 var PERM_PHASES = ['perm-bldg','perm-mep','perm-hist','perm-insp','perm-misc'];
-
+ 
 function addPermRow(tableId, phaseId, prefill){
   var tbody = document.querySelector('#'+tableId+' tbody');
   if(!tbody) return;
@@ -2533,7 +2682,7 @@ function addPermRow(tableId, phaseId, prefill){
    +'<td class="pt-stat">'+statSelHtml+'</td>';
   tbody.appendChild(tr);
 }
-
+ 
 function calcPermRow(tr, phaseId){
   if(!tr) return;
   var fee   = pn(tr.querySelector('.pr-fee').value);
@@ -2543,7 +2692,7 @@ function calcPermRow(tr, phaseId){
   calcPermPhase(phaseId);
   calcAll();
 }
-
+ 
 function calcPermPhase(phaseId){
   var tbl = document.getElementById('tbl-'+phaseId);
   if(!tbl) return;
@@ -2559,7 +2708,7 @@ function calcPermPhase(phaseId){
     ? '<table class="phase-summary" style="min-width:200px;"><tr><td class="ps-grand" style="background:var(--navy);color:#fff;font-weight:700;font-size:12px;padding:5px 10px;">Section Total</td><td class="ps-grand" style="background:var(--navy);color:#fff;font-weight:700;text-align:right;padding:5px 10px;">'+fmt(total)+'</td></tr></table>'
     : '';
 }
-
+ 
 function initPermitTables(){
   var PERM_PHASES_DATA = PHASES.filter(function(p){ return PERM_PHASES.indexOf(p.id) !== -1; });
   PERM_PHASES_DATA.forEach(function(ph){
@@ -2592,17 +2741,17 @@ function toggleIntRoom(id, label){
     try { card.scrollIntoView({behavior:'smooth', block:'start'}); } catch(e){ card.scrollIntoView(); }
   }
 }
-
+ 
 // ===== START =====
 init();
-
+ 
 // ===== DESCRIPTION POPUP =====
 (function(){
   var popup   = document.getElementById('desc-popup');
   var popupTa = document.getElementById('desc-popup-ta');
   var popupTi = document.getElementById('desc-popup-title');
   var activeInput = null;
-
+ 
   function openPopup(input){
     activeInput = input;
     var tr = input.closest('tr');
@@ -2610,7 +2759,7 @@ init();
     var room = tr ? (tr.querySelector('.r-room')||{}).value||'' : '';
     popupTi.textContent = '✏️ ' + (room||item ? (room?room+' — ':'')+(item||'Description') : 'Description');
     popupTa.value = input.value;
-
+ 
     // On mobile, CSS forces bottom-sheet positioning — skip JS positioning
     if(window.innerWidth <= 768){
       popup.style.top = '';
@@ -2620,7 +2769,7 @@ init();
       setTimeout(function(){ popupTa.focus(); popupTa.setSelectionRange(popupTa.value.length, popupTa.value.length); }, 80);
       return;
     }
-
+ 
     // Desktop: position near the input
     var rect = input.getBoundingClientRect();
     var top  = rect.bottom + 6;
@@ -2628,14 +2777,14 @@ init();
     var pw = 380;
     if(left + pw > window.innerWidth - 12) left = window.innerWidth - pw - 12;
     if(top + 160 > window.innerHeight) top = rect.top - 166;
-
+ 
     popup.style.top  = top  + 'px';
     popup.style.left = left + 'px';
     popup.style.width = pw  + 'px';
     popup.classList.add('active');
     setTimeout(function(){ popupTa.focus(); popupTa.setSelectionRange(popupTa.value.length, popupTa.value.length); }, 30);
   }
-
+ 
   function closePopup(){
     if(activeInput && popup.classList.contains('active')){
       activeInput.value = popupTa.value;
@@ -2643,22 +2792,22 @@ init();
     popup.classList.remove('active');
     activeInput = null;
   }
-
+ 
   // Delegate focus on all .r-desc inputs (including dynamically added rows)
   document.addEventListener('focusin', function(e){
     if(e.target.classList.contains('r-desc')) openPopup(e.target);
   });
-
+ 
   // Sync typing back to hidden input live
   popupTa.addEventListener('input', function(){
     if(activeInput) activeInput.value = popupTa.value;
   });
-
+ 
   // Close on Escape
   document.addEventListener('keydown', function(e){
     if(e.key === 'Escape' && popup.classList.contains('active')) closePopup();
   });
-
+ 
   // Close on outside click or touch
   function handleOutsideClose(e){
     if(popup.classList.contains('active') && !popup.contains(e.target) && e.target !== activeInput){
