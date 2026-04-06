@@ -1575,10 +1575,12 @@ var PHASES = [
    ]},
   {id:'hvac', label:'HVAC & Insulation', tab:'mep',
    defaultItems:[
-     {room:'Whole House', item:'HVAC System', mat:'Central A/C + Furnace'},
-     {room:'Attic', item:'Attic Insulation', mat:'R-38 Blown-In'},
-     {room:'Walls', item:'Wall Insulation', mat:'R-15 Batt'},
-     {room:'Basement', item:'Vapor Barrier', mat:'6-mil Poly'}
+     {room:'Whole House', item:'HVAC System',           mat:'Central A/C + Furnace'},
+     {room:'Whole House', item:'HVAC Tune-Up / Service',mat:'HVAC Tune-Up (Labor Only)'},
+     {room:'Basement',    item:'Water Heater Replace',  mat:'50-Gal Gas Water Heater'},
+     {room:'Attic',       item:'Attic Insulation',      mat:'R-38 Blown-In'},
+     {room:'Walls',       item:'Wall Insulation',       mat:'R-15 Batt'},
+     {room:'Basement',    item:'Vapor Barrier',         mat:'6-mil Poly'}
    ]},
   {id:'int-living', label:'Living Room', tab:'interior',
    defaultItems:[
@@ -1925,7 +1927,7 @@ var MAT_OPTIONS_MAP = {
   tree:['N/A (labor only)','Topsoil (per yard)','Grass Seed','Sod Roll','Mulch (per yard)','Compost','River Rock','Decorative Stone','Landscape Fabric','Shrubs / Plantings','Custom / Other'],
   plumb:['PEX-A (Uponor)','PEX-B','Copper Type L','Copper Type M','CPVC','PVC Schedule 40','ABS Pipe','50-Gal Gas Water Heater','50-Gal Electric WH','Tankless Water Heater (Gas)','Tankless WH (Electric)','SharkBite Fittings','Push-to-Connect Fittings','Custom / Other'],
   elec:['Romex 14/2','Romex 12/2','Romex 10/2','12/3 (AFCI)','200A Panel – Square D','200A Panel – Eaton','100A Sub-Panel','Decora Outlet (White)','GFCI Outlet 20A','AFCI Outlet','USB Outlet','LED Recessed Light','LED Retrofit Kit','Ceiling Fan Brace','Smoke/CO Detector','Custom / Other'],
-  hvac:['Central AC + Gas Furnace','Heat Pump System','Mini-Split (1-Zone)','Mini-Split (Multi-Zone)','Boiler Replacement','Baseboard Electric','R-38 Blown-In Fiberglass','R-19 Batt Insulation','R-15 Batt Insulation','Spray Foam Closed-Cell','Spray Foam Open-Cell','Rigid Foam Board','6-mil Poly Vapor Barrier','Bath Exhaust Fan','Custom / Other'],
+  hvac:['Central AC + Gas Furnace','Heat Pump System','Mini-Split (1-Zone)','Mini-Split (Multi-Zone)','Boiler Replacement','Baseboard Electric','HVAC Tune-Up (Labor Only)','HVAC Filter Replacement','HVAC Duct Cleaning','HVAC Duct Repair / Seal','50-Gal Gas Water Heater','50-Gal Electric Water Heater','Tankless Water Heater (Gas)','Tankless Water Heater (Electric)','Water Heater Expansion Tank','Pressure Relief Valve','R-38 Blown-In Fiberglass','R-19 Batt Insulation','R-15 Batt Insulation','Spray Foam Closed-Cell','Spray Foam Open-Cell','Rigid Foam Board','6-mil Poly Vapor Barrier','Bath Exhaust Fan','Custom / Other'],
   'int-living'  :['5/8" Drywall','1/2" Drywall','Joint Compound','Veneer Plaster','3/4" Solid Oak HW','Engineered Hardwood','LVP – COREtec','LVP – LifeProof (HD)','12x24 Porcelain Tile','Carpet','LED Recessed Light','LED Flush Mount Light','LED Pendant Light','Ceiling Fan w/ Light','LED Wall Sconce','Dimmer Switch','6-Panel Hollow Core Door','Solid Core Interior Door','Barn Door Kit','Schlage Lever Set','Kwikset Lever Set','Emtek Lever Set','Decora Outlet (White)','USB Outlet','AFCI Outlet','Decora Wall Plate – White','Decora Wall Plate – Almond','Decora Wall Plate – Brushed Nickel','Decora Single-Pole Switch','Decora 3-Way Switch','Dimmer Switch – Single Pole','Benjamin Moore Regal Select','Sherwin-Williams SuperPaint','Primed MDF Baseboard 3.5"','Primed MDF Baseboard 5.5"','Custom / Other'],
   'int-dining'  :['5/8" Drywall','1/2" Drywall','Joint Compound','Veneer Plaster','3/4" Solid Oak HW','Engineered Hardwood','LVP – COREtec','12x24 Porcelain Tile','Carpet','LED Pendant Light','LED Chandelier','LED Recessed Light','Ceiling Fan w/ Light','Dimmer Switch','6-Panel Hollow Core Door','Solid Core Interior Door','Schlage Lever Set','Kwikset Lever Set','Decora Outlet (White)','USB Outlet','Decora Wall Plate – White','Decora Wall Plate – Brushed Nickel','Decora Single-Pole Switch','Dimmer Switch – Single Pole','Benjamin Moore Regal Select','Sherwin-Williams SuperPaint','Primed MDF Baseboard 3.5"','Custom / Other'],
   'int-kitchen' :['Moisture-Resistant GBD','Durock Cement Board','12x24 Porcelain Tile','12x12 Porcelain Tile','Ceramic Tile','Semi-Custom Shaker Cabinets','RTA Shaker Cabinets','Solid Wood Cabinets','IKEA Kitchen System','Quartz Countertop','Granite Countertop','Butcher Block','Laminate Countertop','Subway Tile 3x6','Mosaic Backsplash','Stainless Undermount Sink','Cast Iron Sink','Kohler Faucet','Moen Faucet','Delta Faucet','LED Recessed Light','LED Under-Cabinet Strip','LED Pendant Light','Dimmer Switch','6-Panel Hollow Core Door','Solid Core Interior Door','Schlage Lever Set','Kwikset Lever Set','GFCI Outlet 20A','USB Outlet','Decora Wall Plate – White','Decora Wall Plate – Brushed Nickel','Decora Single-Pole Switch','Dimmer Switch – Single Pole','Allowance TBD','Benjamin Moore Regal Select','Primed MDF Baseboard 3.5"','Custom / Other'],
