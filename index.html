@@ -1424,7 +1424,7 @@ select.stat-sel option[value=""]{color:#aaa;}
 <div id="tab-materials" class="tabpanel">
   <div class="gs-phase-breakdown">
     <h3>📦 Material Quantity Summary — Project-Wide</h3>
-    <p style="font-size:11px;color:var(--gray-dark);margin-bottom:10px;">Auto-aggregated from all phases. Only rows with a material selected, a Qty entered, <strong>and</strong> a Mat. ($) cost entered are included.</p>
+    <p style="font-size:11px;color:var(--gray-dark);margin-bottom:10px;">Master shopping list auto-built from all phases. Any row with a material selected and a Qty entered will appear here — cost is optional. Same material used in multiple rooms is combined into one line with the total quantity.</p>
     <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;" id="mat-qty-grid">
       <div style="grid-column:span 2;color:#aaa;font-size:11px;font-style:italic;">No materials entered yet. Fill in material and quantity fields across any phase to see totals here.</div>
     </div>
@@ -2137,7 +2137,7 @@ function calcMatQty(){
   var grid = document.getElementById('mat-qty-grid');
   if(!grid) return;
  
-  // Collect only rows where BOTH qty and material cost are entered
+  // Collect all rows where a material AND a qty > 0 are entered (cost not required)
   var allRows = [];
   PHASES.forEach(function(ph){
     var tbl = document.getElementById('tbl-'+ph.id);
@@ -2150,21 +2150,21 @@ function calcMatQty(){
       var roomEl  = tr.querySelector('.r-room');
       var costEl  = tr.querySelector('.r-matcost');
       var purchEl = tr.querySelector('.r-purch');
+      var phaseEl = ph.label;
       if(!matSel) return;
       var mat = (matSel.value||'').trim();
       if(!mat || mat==='-- Select --' || mat==='-- Select Material --') return;
       var qty  = qtyEl  ? pn(qtyEl.value)  : 0;
+      if(qty <= 0) return; // must have a qty entered
       var cost = costEl ? pn(costEl.value) : 0;
-      // Only include rows where BOTH qty > 0 AND mat cost > 0
-      if(qty <= 0 || cost <= 0) return;
       allRows.push({
         mat     : mat,
-        item    : itemEl  ? (itemEl.value||'').trim() : '',
-        room    : roomEl  ? (roomEl.value||'').trim() : '',
+        item    : itemEl  ? (itemEl.value||'').trim()  : '',
+        room    : roomEl  ? (roomEl.value||'').trim()  : '',
+        phase   : phaseEl,
         qty     : qty,
         unit    : unitEl  ? unitEl.value : 'Lump Sum (LS)',
         matCost : cost,
-        unitCost: cost / qty,
         purch   : purchEl ? (purchEl.value||'—') : '—'
       });
     });
@@ -2173,11 +2173,11 @@ function calcMatQty(){
   grid.innerHTML = '';
  
   if(allRows.length === 0){
-    grid.innerHTML = '<div style="grid-column:span 2;color:#aaa;font-size:11px;font-style:italic;">No materials with both Qty and Cost entered yet. Fill in both the Qty and Mat. ($) columns in any phase tab to populate this list.</div>';
+    grid.innerHTML = '<div style="grid-column:span 2;color:#aaa;font-size:12px;font-style:italic;padding:20px 0;">No materials with a Qty entered yet. Go to any phase tab, select a material and enter a quantity — it will appear here automatically.</div>';
     return;
   }
  
-  // Aggregate by material name → sum qty and cost
+  // Aggregate by material name — sum qty and cost across all phases/rooms
   var matMap = {};
   allRows.forEach(function(r){
     var key = r.mat;
@@ -2185,28 +2185,24 @@ function calcMatQty(){
       matMap[key] = {
         mat: r.mat, totalQty: 0, totalCost: 0,
         unit: r.unit, purch: r.purch,
-        locations: [], items: []
+        locations: [], phases: []
       };
     }
     matMap[key].totalQty  += r.qty;
     matMap[key].totalCost += r.matCost;
-    if(r.room && matMap[key].locations.indexOf(r.room) === -1) matMap[key].locations.push(r.room);
-    if(r.item && matMap[key].items.indexOf(r.item) === -1)     matMap[key].items.push(r.item);
-    // If purchaser differs across rows, show "Mixed"
-    if(matMap[key].purch !== r.purch && r.purch !== '—') matMap[key].purch = 'Mixed';
+    var loc = (r.room ? r.room : '') + (r.room && r.phase ? ' / ' : '') + (r.phase ? r.phase : '');
+    if(loc && matMap[key].locations.indexOf(loc) === -1) matMap[key].locations.push(loc);
+    if(matMap[key].purch !== r.purch && r.purch !== '—' && r.purch !== '-- Select --') matMap[key].purch = 'Mixed';
   });
  
   var matList = Object.keys(matMap).map(function(k){ return matMap[k]; });
-  // Sort alphabetically
   matList.sort(function(a,b){ return a.mat.localeCompare(b.mat); });
  
   var totalItems = matList.length;
   var totalCost  = matList.reduce(function(s,r){ return s + r.totalCost; }, 0);
- 
-  // Summary stat cards
-  var nyegCount = matList.filter(function(r){ return r.purch==='NYEG'; }).length;
-  var gcCount   = matList.filter(function(r){ return r.purch==='Contractor'; }).length;
-  var unassigned = matList.filter(function(r){ return r.purch==='-- Select --' || r.purch==='—' || r.purch==='Mixed'; }).length;
+  var totalQty   = matList.reduce(function(s,r){ return s + r.totalQty; }, 0);
+  var nyegCount  = matList.filter(function(r){ return r.purch==='NYEG'; }).length;
+  var gcCount    = matList.filter(function(r){ return r.purch==='Contractor'; }).length;
  
   var wrap = document.createElement('div');
   wrap.style.gridColumn = 'span 2';
@@ -2214,8 +2210,8 @@ function calcMatQty(){
   // Stat bar
   var statBar =
     '<div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:16px;">'
-    +statCard('📋 Total Materials', totalItems + ' items', 'var(--navy)')
-    +statCard('💰 Total Mat. Cost', fmt(totalCost), 'var(--green)')
+    +statCard('📋 Unique Materials', totalItems + ' items', 'var(--navy)')
+    +statCard('📦 Total Qty', totalQty + ' units', '#5a3ea0')
     +statCard('🏢 NYEG Purchasing', nyegCount + ' items', 'var(--blue)')
     +statCard('🔨 GC Purchasing', gcCount + ' items', 'var(--amber)')
     +'</div>';
@@ -2224,60 +2220,57 @@ function calcMatQty(){
   var rows = '';
   matList.forEach(function(r, i){
     var purchBadge = r.purch === 'NYEG'
-      ? '<span style="background:#1a6fb5;color:#fff;border-radius:3px;padding:1px 7px;font-size:10px;font-weight:700;">NYEG</span>'
+      ? '<span style="background:#1a6fb5;color:#fff;border-radius:3px;padding:2px 8px;font-size:11px;font-weight:700;">NYEG</span>'
       : r.purch === 'Contractor'
-      ? '<span style="background:#b87800;color:#fff;border-radius:3px;padding:1px 7px;font-size:10px;font-weight:700;">GC</span>'
-      : '<span style="background:#ccc;color:#555;border-radius:3px;padding:1px 7px;font-size:10px;">'+r.purch+'</span>';
+      ? '<span style="background:#b87800;color:#fff;border-radius:3px;padding:2px 8px;font-size:11px;font-weight:700;">GC</span>'
+      : '<span style="background:#ddd;color:#666;border-radius:3px;padding:2px 8px;font-size:11px;">—</span>';
  
     var locStr = r.locations.length > 0
-      ? '<div style="font-size:10px;color:#888;margin-top:2px;">📍 '+r.locations.slice(0,4).join(' · ')+(r.locations.length>4?' +'+( r.locations.length-4)+' more':'')+'</div>'
+      ? '<div style="font-size:10px;color:#888;margin-top:3px;">📍 '+r.locations.slice(0,5).join(' · ')+(r.locations.length>5?' +'+( r.locations.length-5)+' more':'')+'</div>'
       : '';
  
-    var unitCostStr = (r.totalQty > 0 && r.totalCost > 0)
-      ? fmt(r.totalCost / r.totalQty) + ' / unit'
-      : '—';
+    var costStr = r.totalCost > 0 ? fmt(r.totalCost) : '<span style="color:#bbb;">—</span>';
  
     rows +=
-      '<tr>'
-      +'<td style="text-align:center;color:#aaa;font-size:10px;width:3%;">'+(i+1)+'</td>'
-      +'<td style="width:32%;">'
-      +'  <div style="font-weight:700;font-size:12px;">'+r.mat+'</div>'+locStr
+      '<tr style="'+(i%2===0?'background:#fff;':'background:#f9fafc;')+'">'
+      +'<td style="text-align:center;color:#aaa;font-size:11px;padding:6px 4px;border:1px solid #eee;width:3%;">'+(i+1)+'</td>'
+      +'<td style="padding:7px 10px;border:1px solid #eee;width:35%;">'
+      +'  <div style="font-weight:700;font-size:13px;color:var(--navy);">'+r.mat+'</div>'+locStr
       +'</td>'
-      +'<td style="text-align:center;width:8%;font-size:10px;color:#777;">'+r.unit+'</td>'
-      +'<td style="text-align:center;width:10%;font-weight:900;font-size:15px;color:var(--navy);">'+(r.totalQty > 0 ? r.totalQty : '<span style="color:#ccc;font-size:12px;">TBD</span>')+'</td>'
-      +'<td style="text-align:right;width:12%;font-weight:700;color:var(--green);">'+(r.totalCost > 0 ? fmt(r.totalCost) : '—')+'</td>'
-      +'<td style="text-align:right;width:10%;font-size:10px;color:#888;">'+unitCostStr+'</td>'
-      +'<td style="text-align:center;width:10%;">'+purchBadge+'</td>'
-      +'<td style="text-align:center;width:7%;"><input type="checkbox" style="width:16px;height:16px;cursor:pointer;" title="Mark as ordered"></td>'
-      +'<td style="text-align:center;width:8%;"><input type="checkbox" style="width:16px;height:16px;cursor:pointer;" title="Mark as delivered"></td>'
+      +'<td style="text-align:center;padding:6px 8px;border:1px solid #eee;width:10%;font-size:11px;color:#666;">'+r.unit+'</td>'
+      +'<td style="text-align:center;padding:6px 8px;border:1px solid #eee;width:10%;font-weight:900;font-size:18px;color:var(--navy);">'+r.totalQty+'</td>'
+      +'<td style="text-align:right;padding:6px 10px;border:1px solid #eee;width:12%;font-weight:700;color:var(--green);">'+costStr+'</td>'
+      +'<td style="text-align:center;padding:6px 8px;border:1px solid #eee;width:10%;">'+purchBadge+'</td>'
+      +'<td style="text-align:center;padding:6px 8px;border:1px solid #eee;width:10%;"><input type="checkbox" style="width:18px;height:18px;cursor:pointer;" title="Mark as ordered"></td>'
+      +'<td style="text-align:center;padding:6px 8px;border:1px solid #eee;width:10%;"><input type="checkbox" style="width:18px;height:18px;cursor:pointer;" title="Mark as delivered"></td>'
       +'</tr>';
   });
  
   // Footer totals row
   rows +=
     '<tr style="background:var(--navy);color:#fff;font-weight:900;font-size:12px;">'
-    +'<td colspan="3" style="padding:7px 10px;text-align:right;letter-spacing:0.5px;">PROJECT TOTAL</td>'
-    +'<td style="text-align:center;">'+totalItems+' items</td>'
-    +'<td style="text-align:right;">'+fmt(totalCost)+'</td>'
-    +'<td colspan="4"></td>'
+    +'<td colspan="2" style="padding:8px 12px;letter-spacing:0.5px;">PROJECT TOTAL — '+totalItems+' unique materials</td>'
+    +'<td style="text-align:center;padding:8px;">—</td>'
+    +'<td style="text-align:center;padding:8px;font-size:16px;">'+totalQty+'</td>'
+    +'<td style="text-align:right;padding:8px 12px;">'+(totalCost>0?fmt(totalCost):'—')+'</td>'
+    +'<td colspan="3"></td>'
     +'</tr>';
  
   wrap.innerHTML = statBar +
     '<div class="mat-qty-card">'
-    +'<div class="mqc-header">📋 Master Material &amp; Purchasing List'
-    +'<span style="font-weight:400;font-size:10px;opacity:.75;margin-left:12px;">'+totalItems+' unique materials · Sorted A–Z</span></div>'
+    +'<div class="mqc-header">📋 Master Material &amp; Quantity List — All Phases'
+    +'<span style="font-weight:400;font-size:10px;opacity:.75;margin-left:12px;">'+totalItems+' unique materials · '+totalQty+' total units · Sorted A–Z</span></div>'
     +'<div style="overflow-x:auto;">'
-    +'<table style="width:100%;border-collapse:collapse;font-size:11px;">'
+    +'<table style="width:100%;border-collapse:collapse;font-size:12px;">'
     +'<thead><tr style="background:#eef0f6;">'
-    +'<th style="padding:6px;text-align:center;border:1px solid var(--border);color:var(--navy);font-size:10px;">#</th>'
-    +'<th style="padding:6px 8px;border:1px solid var(--border);color:var(--navy);">Material</th>'
-    +'<th style="padding:6px 8px;text-align:center;border:1px solid var(--border);color:var(--navy);">Unit</th>'
-    +'<th style="padding:6px 8px;text-align:center;border:1px solid var(--border);color:var(--navy);">Total Qty</th>'
-    +'<th style="padding:6px 8px;text-align:right;border:1px solid var(--border);color:var(--navy);">Total Cost</th>'
-    +'<th style="padding:6px 8px;text-align:right;border:1px solid var(--border);color:var(--navy);">Unit Cost</th>'
-    +'<th style="padding:6px 8px;text-align:center;border:1px solid var(--border);color:var(--navy);">Purchaser</th>'
-    +'<th style="padding:6px 8px;text-align:center;border:1px solid var(--border);color:var(--navy);">Ordered ✓</th>'
-    +'<th style="padding:6px 8px;text-align:center;border:1px solid var(--border);color:var(--navy);">Delivered ✓</th>'
+    +'<th style="padding:7px 4px;text-align:center;border:1px solid var(--border);color:var(--navy);font-size:10px;">#</th>'
+    +'<th style="padding:7px 10px;border:1px solid var(--border);color:var(--navy);">Material / Location</th>'
+    +'<th style="padding:7px 8px;text-align:center;border:1px solid var(--border);color:var(--navy);">Unit</th>'
+    +'<th style="padding:7px 8px;text-align:center;border:1px solid var(--border);color:var(--navy);">Total Qty</th>'
+    +'<th style="padding:7px 8px;text-align:right;border:1px solid var(--border);color:var(--navy);">Mat. Cost</th>'
+    +'<th style="padding:7px 8px;text-align:center;border:1px solid var(--border);color:var(--navy);">Purchaser</th>'
+    +'<th style="padding:7px 8px;text-align:center;border:1px solid var(--border);color:var(--navy);">Ordered ✓</th>'
+    +'<th style="padding:7px 8px;text-align:center;border:1px solid var(--border);color:var(--navy);">Delivered ✓</th>'
     +'</tr></thead>'
     +'<tbody>'+rows+'</tbody>'
     +'</table></div></div>';
